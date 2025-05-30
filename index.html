@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pour Memory - Coming Soon</title>
+    <meta name="description" content="Pour Memory transforms wine into lasting memories. Creating products that celebrate moments, connections, and joy. Coming Soon.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Favicon placeholder -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head>
+<body>
+    <!-- Background overlay for image -->
+    <div class="background-overlay"></div>
+    
+    <!-- Main content -->
+    <main class="main-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <img src="logo.png" alt="Pour Memory - Savor the Story" class="logo-image">
+            </div>
+        </header>
+
+        <!-- Hero section -->
+        <section class="hero">
+            <div class="content-wrapper">
+                <!-- Mission statement -->
+                <div class="mission-section">
+                    <p class="mission-text">
+                        Pour Memory's mission is to transform wine into a lasting memory, creating products that celebrate the moments, connections, and joy that accompany every bottle. The brand empowers wine lovers to commemorate their experiences in a meaningful way. Through thoughtfully designed wine labels and journals, Pour Memory enhances gifting, savoring, and storytelling. Our brand is dedicated to inspiring deeper connections and preserving life's celebrations.
+                    </p>
+                </div>
+
+                <!-- Email signup -->
+                <div class="signup-section">
+                    <h2 class="signup-heading">Be the first to know</h2>
+                    <p class="signup-subtitle">Join our mailing list for exclusive early access and updates.</p>
+                    <p class="launch-timeline">Coming Fall 2025</p>
+                    
+                    <form class="signup-form" id="emailForm">
+                        <div class="input-group">
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                placeholder="Enter your email address"
+                                required
+                                class="email-input"
+                                aria-label="Email address"
+                            >
+                            <button type="submit" class="submit-btn">
+                                <span class="btn-text">Notify Me</span>
+                                <span class="btn-loading" style="display: none;">...</span>
+                            </button>
+                        </div>
+                        <div class="form-message" id="formMessage"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-text">© 2024 Pour Memory. All rights reserved.</p>
+        </footer>
+    </main>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html> 
