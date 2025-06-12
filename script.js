@@ -10,167 +10,97 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ===== FORM HANDLING =====
 function initFormHandling() {
-    const form = document.getElementById('emailForm');
-    const emailInput = document.getElementById('email');
+    const form = document.querySelector('.signup-form');
     const submitBtn = form.querySelector('.submit-btn');
     const btnText = submitBtn.querySelector('.btn-text');
     const btnLoading = submitBtn.querySelector('.btn-loading');
-    const messageDiv = document.getElementById('formMessage');
+    const formMessage = document.getElementById('formMessage');
+    const inputGroup = form.querySelector('.input-group');
+    const emailInput = form.querySelector('input[type="email"]');
 
     // Email validation regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-    // Form submission handler
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const email = emailInput.value.trim();
-        
-        // Clear previous messages
-        clearMessage();
-        
-        // Validate email
-        if (!email) {
-            showMessage('Please enter your email address.', 'error');
-            emailInput.focus();
-            return;
-        }
-        
-        if (!emailRegex.test(email)) {
-            showMessage('Please enter a valid email address.', 'error');
-            emailInput.focus();
-            return;
-        }
-        
-        // Show loading state
-        setLoadingState(true);
-        
-        try {
-            // Simulate API call (replace with actual endpoint)
-            await simulateEmailSubmission(email);
-            
-            // Success
-            showMessage('Thank you! We\'ll notify you when Pour Memory launches.', 'success');
-            emailInput.value = '';
-            
-            // Add celebration animation
-            celebrateSubmission();
-            
-        } catch (error) {
-            // Error
-            showMessage('Something went wrong. Please try again.', 'error');
-            console.error('Form submission error:', error);
-        } finally {
-            setLoadingState(false);
-        }
-    });
+    // Function to sanitize email input
+    function sanitizeEmail(email) {
+        // Remove any HTML tags and trim whitespace
+        return email.replace(/<[^>]*>/g, '').trim();
+    }
+
+    // Function to validate email
+    function validateEmail(email) {
+        return emailRegex.test(email);
+    }
+
+    // Function to show message
+    function showMessage(message, isError = false) {
+        formMessage.textContent = message;
+        formMessage.style.color = isError ? '#f44336' : '#4CAF50';
+        formMessage.style.fontSize = isError ? '0.9em' : '1em';
+        formMessage.style.marginTop = '8px';
+    }
 
     // Real-time email validation
     emailInput.addEventListener('input', function() {
-        clearMessage();
-        
-        const email = this.value.trim();
-        if (email && !emailRegex.test(email)) {
-            this.style.borderColor = 'var(--color-merlot)';
+        const email = sanitizeEmail(this.value);
+        if (email && !validateEmail(email)) {
+            this.style.borderColor = '#f44336';
         } else {
             this.style.borderColor = 'transparent';
         }
     });
 
-    // Loading state management
-    function setLoadingState(loading) {
-        if (loading) {
-            submitBtn.classList.add('loading');
-            submitBtn.disabled = true;
-            btnText.style.display = 'none';
-            btnLoading.style.display = 'inline-block';
-        } else {
-            submitBtn.classList.remove('loading');
-            submitBtn.disabled = false;
-            btnText.style.display = 'inline-block';
-            btnLoading.style.display = 'none';
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Sanitize and validate email before submission
+        const email = sanitizeEmail(emailInput.value);
+        
+        if (!email) {
+            showMessage('Please enter your email address.', true);
+            emailInput.focus();
+            return;
         }
-    }
 
-    // Message display functions
-    function showMessage(text, type) {
-        messageDiv.textContent = text;
-        messageDiv.className = `form-message ${type}`;
-        messageDiv.style.opacity = '1';
-        messageDiv.style.transform = 'translateY(0)';
-    }
+        if (!validateEmail(email)) {
+            showMessage('Please enter a valid email address.', true);
+            emailInput.focus();
+            return;
+        }
 
-    function clearMessage() {
-        messageDiv.textContent = '';
-        messageDiv.className = 'form-message';
-        messageDiv.style.opacity = '0';
-        messageDiv.style.transform = 'translateY(-10px)';
-    }
+        // Show loading state
+        btnText.style.display = 'none';
+        btnLoading.style.display = 'inline';
+        submitBtn.disabled = true;
+        formMessage.textContent = '';
 
-    // Simulate API call (replace with your actual email service)
-    async function simulateEmailSubmission(email) {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Simulate 90% success rate
-                if (Math.random() > 0.1) {
-                    console.log('Email submitted:', email);
-                    resolve();
-                } else {
-                    reject(new Error('Simulated network error'));
+        try {
+            const formData = new FormData(form);
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
                 }
-            }, 1500);
-        });
-    }
+            });
 
-    // Celebration animation
-    function celebrateSubmission() {
-        // Create floating particles
-        for (let i = 0; i < 5; i++) {
-            setTimeout(() => createParticle(), i * 100);
-        }
-    }
-
-    function createParticle() {
-        const particle = document.createElement('div');
-        particle.style.cssText = `
-            position: fixed;
-            width: 4px;
-            height: 4px;
-            background: var(--color-merlot);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1000;
-            opacity: 1;
-        `;
-        
-        const rect = submitBtn.getBoundingClientRect();
-        particle.style.left = (rect.left + rect.width / 2) + 'px';
-        particle.style.top = (rect.top + rect.height / 2) + 'px';
-        
-        document.body.appendChild(particle);
-        
-        // Animate particle
-        const angle = Math.random() * Math.PI * 2;
-        const velocity = 100 + Math.random() * 100;
-        const duration = 1000 + Math.random() * 1000;
-        
-        particle.animate([
-            {
-                transform: 'translate(0, 0) scale(1)',
-                opacity: 1
-            },
-            {
-                transform: `translate(${Math.cos(angle) * velocity}px, ${Math.sin(angle) * velocity}px) scale(0)`,
-                opacity: 0
+            if (response.ok) {
+                // Hide the input and submit button
+                inputGroup.style.display = 'none';
+                showMessage('Thanks for signing up! We\'ll be in touch soon.');
+                form.reset();
+            } else {
+                throw new Error('Network response was not ok');
             }
-        ], {
-            duration: duration,
-            easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-            fill: 'forwards'
-        }).onfinish = () => {
-            particle.remove();
-        };
-    }
+        } catch (error) {
+            showMessage('Oops! There was a problem submitting your email. Please try again.', true);
+        } finally {
+            // Reset button state
+            btnText.style.display = 'inline';
+            btnLoading.style.display = 'none';
+            submitBtn.disabled = false;
+        }
+    });
 }
 
 // ===== PARALLAX EFFECTS =====
